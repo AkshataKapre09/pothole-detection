@@ -12,20 +12,44 @@ st.set_page_config(page_title="Pothole Detection", page_icon="🚧", layout="wid
 from datetime import datetime
 current_date = datetime.now().strftime("%B %d, %Y")
 
+# Hugging Face repo where pothole_best.pt is hosted.
+# Format: "username/repo-name"   e.g. "AkshataKapre09/pothole-model"
+HF_REPO_ID = os.getenv("HF_REPO_ID", "AkshataKapre09/pothole-model")
+HF_FILENAME = "pothole_best.pt"
+LOCAL_MODEL_PATH = "pothole_best.pt"
+
+def _download_model_from_hf():
+    """Download pothole_best.pt from Hugging Face Hub if not already present."""
+    if os.path.exists(LOCAL_MODEL_PATH):
+        return LOCAL_MODEL_PATH
+    try:
+        from huggingface_hub import hf_hub_download
+        st.info("⏳ Downloading model from Hugging Face Hub…")
+        path = hf_hub_download(repo_id=HF_REPO_ID, filename=HF_FILENAME)
+        # Copy to working directory so YOLO can find it by short name
+        import shutil
+        shutil.copy(path, LOCAL_MODEL_PATH)
+        st.success("✅ Model downloaded successfully.")
+        return LOCAL_MODEL_PATH
+    except Exception as e:
+        st.warning(f"Could not download from Hugging Face ({e}). Falling back to yolov8n.pt.")
+        return None
+
 @st.cache_resource
 def load_model(model_path=None):
-    """Load YOLO model. Tries local pothole_best.pt, falls back to yolov8n."""
+    """Load YOLO model. Priority: uploaded file > env MODEL_PATH > HF Hub > yolov8n fallback."""
     if model_path:
         path = model_path
     else:
-        # Priority: explicit MODEL_PATH env var > local pothole_best.pt > yolov8n.pt
         env_path = os.getenv("MODEL_PATH")
         if env_path and os.path.exists(env_path):
             path = env_path
-        elif os.path.exists("pothole_best.pt"):
-            path = "pothole_best.pt"
+        elif os.path.exists(LOCAL_MODEL_PATH):
+            path = LOCAL_MODEL_PATH
         else:
-            path = "yolov8n.pt"
+            # Try downloading from Hugging Face Hub
+            downloaded = _download_model_from_hf()
+            path = downloaded if downloaded else "yolov8n.pt"
 
     try:
         model = YOLO(path)
