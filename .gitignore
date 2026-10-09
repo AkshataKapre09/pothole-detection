@@ -1,0 +1,123 @@
+# Project .gitignore for pothole-detection-yolov8
+
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Model weights (large files)
+*.pt
+*.pth
+*.h5
+*.ckpt
+pothole_best.pt
+yolov8*.pt
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Streamlit
+.streamlit/
+.streamlit/secrets.toml
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Training outputs, data and models
+runs/
+weights/
+models/
+data/
+datasets/
+synthetic_potholes/
+temp_pothole_dataset/
+
+# Checkpoint and large model files
+*.ckpt
+*.pth
+*.h5
+*.onnx
+
+# Secrets and credentials (CRITICAL)
+.env
+.env.*
+!.env.example
+credentials.json
+secrets.json
+secrets/
+*.key
+*.pem
+*.pfx
+*.p12
+kaggle.json
+aws_credentials
+aws_config
+*.secret
+private_key*
+token*
+
+# API Keys and authentication
+API_KEY*
+api_key*
+auth_token*
+access_token*
+
+# Cloud / infra / deployment
+.aws/
+.terraform/
+.gcp/
+.azure/
+.travis.yml
+.github/workflows/*secrets*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache
+.cache/
+*.cache
+
+# User uploads and sensitive images
+uploads/
+downloads/
+user_data/
+sensitive_data/
+
+# Backup files
+*.bak
+*.backup
+*~
+.DS_Store
+Thumbs.db
